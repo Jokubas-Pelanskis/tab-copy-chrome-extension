@@ -1,0 +1,19 @@
+{
+    "manifest_version": 3,
+    "name": "Copy Tab Titles and URLs",
+    "version": "1.0",
+    "description": "Copies the titles and URLs of all open tabs",
+    "permissions": ["tabs"],  // Permission to access tab info
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icons/icon.png",
+        "48": "icons/icon.png",
+        "128": "icons/icon.png"
+      }
+    }
+  }
+
