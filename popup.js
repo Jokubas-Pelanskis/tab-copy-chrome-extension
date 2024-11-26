@@ -1,19 +1,29 @@
+// update so that commentInputBox would have all comments for the current tab when popup is opened
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Send message to background script to get the active tab's title and URL
+    chrome.runtime.sendMessage({ action: "getActiveTabInfo" }, (tabInfo) => {
+      document.getElementById("commentInputBox").innerText = tabInfo.tab_comments;
+    });
+  });
+
+
+
 document.getElementById("copyAllButton").addEventListener("click", () => {
-    // Send message to background script to get all tab titles and URLs in the current window
-    // chrome.runtime.sendMessage({ action: "getTabInfo" }, (tabInfo) => {
-    //   const tabText = tabInfo.map(tab => `- [${tab.title}](${tab.url})`).join("\n");
-    //   copyToClipboard(tabText);
-    // });
 
     // print all tabs with comments
     chrome.runtime.sendMessage({ action: "getTabInfo" }, (tabs) => {
       var tabText = "";
       for (let i = 0; i < tabs.length; i++){
         tabText += `[${tabs[i].title}](${tabs[i].url})\n`;
-        alert(tabs[i].tab_comments);
-        if (tabs[i].tab_comments){
-          for (let j = 0; j < tabs[i].tab_comments.length; j++){
-            tabText += `\t- ${tabs[i].tab_comments[j]}\n`;
+        const comments = tabs[i].tab_comments;
+        if (comments){
+          // split the text into lines and print each line. comments is a single string
+          const lines = comments.split("\n");
+          for (let i = 0; i < lines.length; i++){
+            if (lines[i] !== "") {
+              tabText += `- ${lines[i]}\n`;
+            }
           }
         }
       }
@@ -25,10 +35,16 @@ document.getElementById("copyAllButton").addEventListener("click", () => {
     // Send message to background script to get the active tab's title and URL
     chrome.runtime.sendMessage({ action: "getActiveTabInfo" }, (tabInfo) => {
       var activeTabText = `[${tabInfo.title}](${tabInfo.url})\n`;
-      
-      for (let i = 0; i < tabInfo.tab_comments.length; i++){
-        activeTabText += `\t- ${tabInfo.tab_comments[i]}\n`;
+
+      const comments = tabInfo.tab_comments;
+      if (comments){
+        // split the text into lines and print each line. comments is a single string
+        const lines = comments.split("\n");
+        for (let i = 0; i < lines.length; i++){
+          activeTabText += `- ${lines[i]}\n`;
+        }
       }
+      
       copyToClipboard(activeTabText);
     });
   });
@@ -140,5 +156,15 @@ document.getElementById("copyAllButton").addEventListener("click", () => {
 
 
   }
+
+
+  // Implement a 'deleteCommentsButton' event listener that when pressed deletes all comments from storage
+  document.getElementById("deleteAllCommentsButton").addEventListener("click", () => {
+    // Send message to background script to delete all comments from storage
+    chrome.storage.local.set({ comments: {} }, () => {
+      alert("All comments deleted successfully!");
+    });
+  });
+
 
   

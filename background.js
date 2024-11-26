@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(() => {
             title: tab.title,
             url: tab.url,
             id: tab.id,
-            tab_comments: comments[tab.id] || [],
+            tab_comments: comments[tab.id] || "",
           }));
           sendResponse(tabInfo);
         }
@@ -50,15 +50,7 @@ chrome.runtime.onInstalled.addListener(() => {
         // get comments from local storage
         chrome.storage.local.get("comments", (data) => {
           const comments = data.comments || {};
-          comments[activeTab.id] = comments[activeTab.id] || [];
-          if (!comments[activeTab.id]){
-            // Create an empty list
-            comments[activeTab.id] = [];
-          }
-          else{
-            // Add the comment to the list
-            comments[activeTab.id].push(message.comment);
-          }
+          comments[activeTab.id] = message.comment
           chrome.storage.local.set({ comments }, () => {
             sendResponse({ success: true });
           });
