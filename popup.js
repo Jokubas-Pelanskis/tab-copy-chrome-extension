@@ -15,14 +15,14 @@ document.getElementById("copyAllButton").addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "getTabInfo" }, (tabs) => {
       var tabText = "";
       for (let i = 0; i < tabs.length; i++){
-        tabText += `[${tabs[i].title}](${tabs[i].url})\n`;
+        tabText += `- [${tabs[i].title}](${tabs[i].url})\n`;
         const comments = tabs[i].tab_comments;
         if (comments){
           // split the text into lines and print each line. comments is a single string
           const lines = comments.split("\n");
           for (let i = 0; i < lines.length; i++){
             if (lines[i] !== "") {
-              tabText += `- ${lines[i]}\n`;
+              tabText += `\t- ${lines[i]}\n`;
             }
           }
         }
